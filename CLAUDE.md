@@ -10,7 +10,7 @@ Ce fichier est la référence du projet. À relire au début de chaque nouvelle 
 
 ## 1. La boutique
 - Nom : **Maison Féline**
-- Produits : vêtements et chaussures — cible [femme / homme / mixte] → **à confirmer avec la gérante**
+- Produits : vêtements et chaussures — cible **mixte** (femme et homme, catégories séparées)
 - Clients : principalement au Sénégal, majoritairement sur mobile
 - Langue : français
 - Devise : FCFA (XOF)
@@ -77,4 +77,8 @@ Ce fichier est la référence du projet. À relire au début de chaque nouvelle 
 7. **Mise en ligne** : déploiement + configuration du nom de domaine, expliqué simplement.
 
 ## Historique des décisions
-- (à compléter au fur et à mesure : choix de stack, palette retenue, agrégateur de paiement choisi, etc.)
+- Cible confirmée : mixte (femme + homme)
+- Pas de logo/charte existants : identité visuelle créée dans les maquettes
+- Stack validée : Next.js + TypeScript, Tailwind CSS, PostgreSQL + Prisma, Auth.js, hébergement Vercel pour démarrer
+- Paiement : agrégateur retenu en approche (PayTech en premier choix, CinetPay en second choix) — confirmation définitive à l'étape 5
+- (à compléter : palette retenue à l'issue de l'étape 1, choix final de l'agrégateur, nom de domaine, etc.)
