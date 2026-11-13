@@ -81,4 +81,5 @@ Ce fichier est la référence du projet. À relire au début de chaque nouvelle 
 - Pas de logo/charte existants : identité visuelle créée dans les maquettes
 - Stack validée : Next.js + TypeScript, Tailwind CSS, PostgreSQL + Prisma, Auth.js, hébergement Vercel pour démarrer
 - Paiement : agrégateur retenu en approche (PayTech en premier choix, CinetPay en second choix) — confirmation définitive à l'étape 5
-- (à compléter : palette retenue à l'issue de l'étape 1, choix final de l'agrégateur, nom de domaine, etc.)
+- Palette retenue à l'issue de l'étape 1 : **Noir & Or** (maquettes/maquette-1-noir-or)
+- (à compléter : choix final de l'agrégateur, nom de domaine, etc.)
