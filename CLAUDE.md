@@ -82,4 +82,7 @@ Ce fichier est la référence du projet. À relire au début de chaque nouvelle 
 - Stack validée : Next.js + TypeScript, Tailwind CSS, PostgreSQL + Prisma, Auth.js, hébergement Vercel pour démarrer
 - Paiement : agrégateur retenu en approche (PayTech en premier choix, CinetPay en second choix) — confirmation définitive à l'étape 5
 - Palette retenue à l'issue de l'étape 1 : **Noir & Or** (maquettes/maquette-1-noir-or)
+- Étape 2 (vitrine) démarrée : projet Next.js créé dans `site/` (App Router, TypeScript, Tailwind CSS v4), thème Noir & Or repris en variables CSS, données produits fictives dans `site/src/lib/products.ts`
+- Pages réalisées à l'étape 2 : accueil, Femme/Homme/Chaussures + sous-catégories avec filtres (taille/couleur/prix), recherche, fiche produit (galerie, couleurs, tailles, panier ou commande directe), panier (persistant en local via localStorage, sans backend), pages d'info (contact, livraison, mentions légales, etc.)
+- Volontairement pas encore fonctionnel à l'étape 2 (arrive aux étapes 3/5) : création de compte, connexion, validation de commande réelle, paiement — des pages d'attente expliquent cela au lieu de liens morts
 - (à compléter : choix final de l'agrégateur, nom de domaine, etc.)

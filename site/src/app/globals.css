@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0b0b0c;
+  --surface: #151515;
+  --surface-2: #1d1d1e;
+  --foreground: #f5f1e8;
+  --foreground-muted: rgba(245, 241, 232, 0.65);
+  --accent: #c9a24b;
+  --line: rgba(245, 241, 232, 0.12);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-accent: var(--accent);
+  --color-line: var(--line);
+  --font-display: var(--font-bodoni), Georgia, serif;
+  --font-body: var(--font-jost), "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Reveal on scroll */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(.2,.7,.2,1), transform 0.7s cubic-bezier(.2,.7,.2,1);
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* Marquee */
+.marquee-track {
+  animation: scroll-left 26s linear infinite;
+}
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* Product media hover swap */
+.media-a, .media-b {
+  transition: opacity 0.5s cubic-bezier(.2,.7,.2,1), transform 0.6s cubic-bezier(.2,.7,.2,1);
+}
+.media-b { opacity: 0; }
+.group:hover .media-a { opacity: 0; transform: scale(1.04); }
+.group:hover .media-b { opacity: 1; transform: scale(1.04); }
+
+input[type="range"] {
+  accent-color: var(--accent);
+}
