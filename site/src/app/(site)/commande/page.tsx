@@ -155,6 +155,11 @@ export default function CommandePage() {
             Pour Wave et Orange Money, vous serez redirigée vers une page de paiement
             sécurisée. La commande n&apos;est confirmée qu&apos;une fois le paiement reçu.
           </p>
+          <p className="mt-2 text-xs text-accent">
+            Pour un paiement à la livraison, un acompte de 50 % est demandé avant
+            l&apos;expédition (solde réglé à la livraison). Vous serez contactée pour
+            organiser son règlement.
+          </p>
         </fieldset>
 
         {state.error && <p className="text-sm text-accent">{state.error}</p>}

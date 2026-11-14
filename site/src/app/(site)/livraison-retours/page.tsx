@@ -12,8 +12,9 @@ export default function LivraisonRetoursPage() {
         dans son emballage d&apos;origine.
       </p>
       <p>
-        Paiement à la commande par Wave, Orange Money, ou à la livraison selon
-        les zones couvertes.
+        Paiement à la livraison : un acompte de 50 % est demandé avant l&apos;expédition,
+        le solde étant réglé à la réception. Wave et Orange Money seront bientôt
+        disponibles directement sur le site.
       </p>
     </InfoPage>
   );

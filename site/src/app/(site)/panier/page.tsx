@@ -91,7 +91,7 @@ export default function PanierPage() {
           Passer la commande
         </Link>
         <p className="max-w-[300px] text-right text-xs text-foreground-muted">
-          Paiement Wave, Orange Money ou à la livraison, disponible à l&apos;étape 5.
+          Paiement Wave, Orange Money ou à la livraison (acompte de 50 % demandé).
         </p>
       </div>
     </div>
