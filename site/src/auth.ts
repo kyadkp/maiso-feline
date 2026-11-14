@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { phoneSchema } from "@/lib/validation";
 
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
   pages: { signIn: "/connexion" },
@@ -21,10 +24,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await prisma.user.findUnique({ where: { phone: phoneResult.data } });
         if (!user) return null;
 
-        const valid = await bcrypt.compare(password, user.passwordHash);
-        if (!valid) return null;
+        // Compte temporairement verrouillé après trop de tentatives échouées :
+        // on refuse sans préciser la raison, pour ne pas confirmer qu'il existe.
+        if (user.lockedUntil && user.lockedUntil > new Date()) return null;
 
-        return { id: user.id, name: user.name, phone: user.phone };
+        const valid = await bcrypt.compare(password, user.passwordHash);
+
+        if (!valid) {
+          const attempts = user.failedAttempts + 1;
+          const lock = attempts >= MAX_FAILED_ATTEMPTS;
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              failedAttempts: lock ? 0 : attempts,
+              lockedUntil: lock ? new Date(Date.now() + LOCK_DURATION_MS) : null,
+            },
+          });
+          return null;
+        }
+
+        if (user.failedAttempts > 0 || user.lockedUntil) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { failedAttempts: 0, lockedUntil: null },
+          });
+        }
+
+        return { id: user.id, name: user.name, phone: user.phone, role: user.role };
       },
     }),
   ],
@@ -33,12 +59,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user?.id) {
         token.id = user.id;
         token.phone = user.phone;
+        token.role = user.role;
       }
       return token;
     },
     session({ session, token }) {
       session.user.id = token.id;
       session.user.phone = token.phone;
+      session.user.role = token.role;
       return session;
     },
   },

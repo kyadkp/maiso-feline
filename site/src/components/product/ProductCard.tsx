@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CardMedia } from "./ProductMedia";
-import { formatPrice, SECTION_LABELS } from "@/lib/products";
+import { formatPrice } from "@/lib/format";
+import { SECTION_LABELS } from "@/lib/sections";
 import type { Product } from "@/lib/types";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -12,7 +13,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/produit/${product.slug}`} className="group block">
       <div className="relative mb-4">
-        <CardMedia tone={product.tone} />
+        <CardMedia tone={product.tone} imageUrl={product.imageUrl} alt={product.name} />
         {product.isNew && (
           <span className="absolute left-3.5 top-3.5 rounded-xs bg-accent px-2.5 py-1 text-[11px] tracking-wider text-background uppercase">
             Nouveau

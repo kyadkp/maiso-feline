@@ -47,3 +47,7 @@ next-env.d.ts
 
 # client Prisma généré
 /src/generated
+
+# photos produits envoyées par l'admin (données locales, pas du code)
+/public/uploads/*
+!/public/uploads/.gitkeep

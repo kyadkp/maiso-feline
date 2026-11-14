@@ -1,16 +1,15 @@
 import Link from "next/link";
-import { CATEGORY_TREE } from "@/lib/products";
-import type { Section } from "@/lib/types";
+import type { Category, Section } from "@/lib/types";
 
 export function CategoryPills({
   section,
+  categories,
   active,
 }: {
   section: Section;
+  categories: Category[];
   active?: string;
 }) {
-  const categories = CATEGORY_TREE[section];
-
   return (
     <div className="mb-10 flex flex-wrap gap-2.5">
       <Link

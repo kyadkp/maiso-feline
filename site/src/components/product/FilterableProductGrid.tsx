@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ProductGrid } from "./ProductGrid";
-import { formatPrice } from "@/lib/products";
+import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
 export function FilterableProductGrid({ products }: { products: Product[] }) {

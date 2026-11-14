@@ -1,5 +1,4 @@
 export type Section = "femme" | "homme" | "chaussures";
-export type Gender = "femme" | "homme" | "mixte";
 export type Tone = 1 | 2 | 3 | 4;
 
 export interface ColorOption {
@@ -14,15 +13,17 @@ export interface SizeOption {
 }
 
 export interface Category {
+  id: string;
   slug: string;
   label: string;
+  section: Section;
 }
 
 export interface Product {
+  id: string;
   slug: string;
   name: string;
   section: Section;
-  gender: Gender;
   categorySlug: string;
   categoryLabel: string;
   price: number;
@@ -34,4 +35,5 @@ export interface Product {
   tone: Tone;
   isNew?: boolean;
   isBestSeller?: boolean;
+  imageUrl?: string | null;
 }

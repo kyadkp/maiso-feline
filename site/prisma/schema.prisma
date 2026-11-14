@@ -7,13 +7,21 @@ datasource db {
   provider = "sqlite"
 }
 
+enum Role {
+  CLIENT
+  ADMIN
+}
+
 model User {
-  id           String   @id @default(cuid())
-  phone        String   @unique
-  name         String
-  passwordHash String
-  createdAt    DateTime @default(now())
-  orders       Order[]
+  id                 String    @id @default(cuid())
+  phone              String    @unique
+  name               String
+  passwordHash       String
+  role               Role      @default(CLIENT)
+  failedAttempts     Int       @default(0)
+  lockedUntil        DateTime?
+  createdAt          DateTime  @default(now())
+  orders             Order[]
 }
 
 enum PaymentMethod {
@@ -58,4 +66,44 @@ model OrderItem {
   color    String
   size     String
   quantity Int
+}
+
+enum Section {
+  FEMME
+  HOMME
+  CHAUSSURES
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  section  Section
+  slug     String
+  label    String
+  products Product[]
+
+  @@unique([section, slug])
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  section       Section
+  category      Category @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  price         Int
+  oldPrice      Int?
+  description   String
+  tailles       String
+  colors        Json
+  sizes         Json
+  isNew         Boolean  @default(false)
+  isBestSeller  Boolean  @default(false)
+  tone          Int      @default(1)
+  imageUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([section])
+  @@index([categoryId])
 }

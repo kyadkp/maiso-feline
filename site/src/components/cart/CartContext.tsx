@@ -18,6 +18,7 @@ export interface CartItem {
   color: string;
   size: string;
   tone: number;
+  imageUrl?: string | null;
   quantity: number;
 }
 
