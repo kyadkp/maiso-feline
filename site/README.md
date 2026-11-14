@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Maison Féline — site web
 
-## Getting Started
+## Lancer le site soi-même (sans Claude Code)
 
-First, run the development server:
+1. Ouvrez un terminal (PowerShell) dans ce dossier `site`.
+2. Tapez cette commande et appuyez sur Entrée :
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   ```bash
+   npm run dev
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Attendez le message `✓ Ready`, puis ouvrez votre navigateur à l'adresse :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```
+   http://localhost:3000
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Pour arrêter le site, retournez dans le terminal et appuyez sur `Ctrl + C`.
 
-## Learn More
+Tant que le terminal reste ouvert, le site continue de fonctionner. Si vous fermez le terminal ou éteignez l'ordinateur, il faudra refaire les étapes 1 à 3 pour le relancer.
 
-To learn more about Next.js, take a look at the following resources:
+## Espace admin
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Adresse : `http://localhost:3000/admin`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Identifiants dans le fichier `.env` à la racine de `site` (ne jamais partager ce fichier ni le mettre en ligne) :
+- `ADMIN_PHONE` — numéro de téléphone de connexion
+- `ADMIN_PASSWORD` — mot de passe (provisoire pour l'instant, à changer dès que possible)
 
-## Deploy on Vercel
+## À savoir
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Les données (produits, commandes, comptes) sont stockées localement dans `prisma/dev.db` sur cet ordinateur. Elles ne sont pas encore en ligne.
+- Voir `CLAUDE.md` à la racine du projet pour l'avancement complet du projet, étape par étape.

@@ -94,10 +94,10 @@ Ce fichier est la référence du projet. À relire au début de chaque nouvelle 
   - Point de vigilance pour l'audit de sécurité (étape 6) : `npm audit` signale 7 failles "modérées" dans une dépendance de développement d'ESLint (jamais exécutée en production) ; à vérifier si un correctif est disponible d'ici l'étape 6
 - Étape 4 (espace admin) réalisée :
   - Accès séparé à `/admin/connexion`, zone protégée sous `/admin/(protected)` (mise en page distincte, sans le menu/panier du site client). Rôle `ADMIN` ajouté au modèle `User` (même mécanisme de connexion que les clientes, téléphone + mot de passe, mais accès refusé si le rôle n'est pas admin).
-  - **Compte admin créé avec un numéro et un mot de passe provisoires** (`ADMIN_PHONE`/`ADMIN_PASSWORD` dans `.env`, jamais dans le code) : en attente du vrai numéro de la gérante pour le mettre à jour.
+  - **Compte admin** : numéro confirmé par la gérante (771614453), stocké dans `.env` (`ADMIN_PHONE`/`ADMIN_PASSWORD`, jamais dans le code). Mot de passe encore provisoire (généré) — à changer par la gérante elle-même dès qu'une page de changement de mot de passe existe (pas encore construite).
   - Sécurité ajoutée : limitation des tentatives de connexion (5 essais, blocage 15 minutes) appliquée à tous les comptes, y compris admin — testée et fonctionnelle. 2FA pas encore mis en place (noté pour l'étape 6).
   - Tableau de bord : nombre de commandes, nouvelles commandes, chiffre d'affaires.
   - Gestion des commandes : liste complète, recherche (nom/téléphone/numéro), filtre par statut, changement de statut en un clic.
   - Catalogue (produits + catégories) **déplacé de données statiques vers la base de données** : la gérante peut maintenant ajouter/modifier/supprimer produits et catégories elle-même, avec envoi de photo (jpg/png/webp, 5 Mo max, stockées dans `site/public/uploads`). Une catégorie encore utilisée par des produits ne peut pas être supprimée (message d'erreur clair).
   - Toutes les pages client (accueil, catégories, recherche, fiche produit) lisent désormais la base de données en direct : un produit ajouté par la gérante apparaît immédiatement sur le site.
-- (à compléter : vrai numéro de téléphone admin, choix final de l'agrégateur, nom de domaine, etc.)
+- (à compléter : choix final de l'agrégateur, nom de domaine, etc.)
