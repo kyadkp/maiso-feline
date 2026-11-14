@@ -27,7 +27,7 @@ export default async function AdminProduitsPage() {
           <div key={product.id} className="flex items-center gap-5 py-4">
             <GalleryMedia
               tone={product.tone}
-              imageUrl={product.imageUrl}
+              imageUrl={product.images[0]?.url}
               alt={product.name}
               className="h-20 w-16 shrink-0"
             />

@@ -19,6 +19,11 @@ export interface Category {
   section: Section;
 }
 
+export interface ProductImage {
+  id: string;
+  url: string;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -35,5 +40,5 @@ export interface Product {
   tone: Tone;
   isNew?: boolean;
   isBestSeller?: boolean;
-  imageUrl?: string | null;
+  images: ProductImage[];
 }

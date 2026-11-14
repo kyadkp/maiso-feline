@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/format";
 import { toneSequence } from "@/lib/tone";
 import type { Product } from "@/lib/types";
 import { GalleryMedia } from "./ProductMedia";
+import { ProductLightbox } from "./ProductLightbox";
 
 const ACCORDION_SECTIONS = (product: Product) => [
   { title: "Description", body: product.description },
@@ -23,6 +24,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
   const thumbTones = toneSequence(product.tone);
   const [activeThumb, setActiveThumb] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [color, setColor] = useState(product.colors[0]?.name ?? "");
   const [size, setSize] = useState(
     product.sizes.find((s) => s.inStock)?.label ?? product.sizes[0]?.label ?? ""
@@ -40,7 +42,7 @@ export function ProductDetail({ product }: { product: Product }) {
       color,
       size,
       tone: product.tone,
-      imageUrl: product.imageUrl,
+      imageUrl: product.images[0]?.url ?? null,
     };
   }
 
@@ -58,13 +60,36 @@ export function ProductDetail({ product }: { product: Product }) {
   return (
     <div className="grid grid-cols-1 gap-10 pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
       <div>
-        {product.imageUrl ? (
-          <GalleryMedia
-            tone={product.tone}
-            imageUrl={product.imageUrl}
-            alt={product.name}
-            className="aspect-[4/5]"
-          />
+        {product.images.length > 0 ? (
+          <>
+            <button
+              onClick={() => setLightboxOpen(true)}
+              aria-label="Voir la photo en plein écran"
+              className="block w-full cursor-zoom-in"
+            >
+              <GalleryMedia
+                tone={product.tone}
+                imageUrl={product.images[activeThumb]?.url}
+                alt={product.name}
+                className="mb-3.5 aspect-[4/5]"
+              />
+            </button>
+            {product.images.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto">
+                {product.images.map((img, i) => (
+                  <button
+                    key={img.id}
+                    onClick={() => setActiveThumb(i)}
+                    className={`h-22.5 w-18 shrink-0 overflow-hidden rounded-xs border transition-opacity ${
+                      activeThumb === i ? "border-accent opacity-100" : "border-line opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <GalleryMedia imageUrl={img.url} tone={product.tone} alt={product.name} className="h-full w-full" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <>
             <GalleryMedia tone={thumbTones[activeThumb]} className="mb-3.5 aspect-[4/5]" />
@@ -84,6 +109,15 @@ export function ProductDetail({ product }: { product: Product }) {
           </>
         )}
       </div>
+
+      {lightboxOpen && product.images.length > 0 && (
+        <ProductLightbox
+          images={product.images}
+          initialIndex={activeThumb}
+          alt={product.name}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
 
       <div>
         <p className="mb-2.5 text-xs tracking-[0.22em] text-accent uppercase">

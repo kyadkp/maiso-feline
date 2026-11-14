@@ -13,7 +13,12 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/produit/${product.slug}`} className="group block">
       <div className="relative mb-4">
-        <CardMedia tone={product.tone} imageUrl={product.imageUrl} alt={product.name} />
+        <CardMedia
+          tone={product.tone}
+          imageUrl={product.images[0]?.url}
+          hoverImageUrl={product.images[1]?.url}
+          alt={product.name}
+        />
         {product.isNew && (
           <span className="absolute left-3.5 top-3.5 rounded-xs bg-accent px-2.5 py-1 text-[11px] tracking-wider text-background uppercase">
             Nouveau

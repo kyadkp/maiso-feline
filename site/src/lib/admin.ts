@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { prisma } from "./db";
 import { SECTION_FROM_DB, SECTION_TO_DB } from "./sections";
@@ -94,6 +94,8 @@ export async function deleteCategory(id: string) {
 
 // ---------- Produits ----------
 
+const PRODUCT_INCLUDE = { category: true, images: { orderBy: { position: "asc" as const } } };
+
 function toProduct(p: {
   id: string;
   slug: string;
@@ -109,7 +111,7 @@ function toProduct(p: {
   isNew: boolean;
   isBestSeller: boolean;
   tone: number;
-  imageUrl: string | null;
+  images: { id: string; url: string }[];
 }): Product {
   return {
     id: p.id,
@@ -127,20 +129,20 @@ function toProduct(p: {
     tone: p.tone as 1 | 2 | 3 | 4,
     isNew: p.isNew,
     isBestSeller: p.isBestSeller,
-    imageUrl: p.imageUrl,
+    images: p.images.map((img) => ({ id: img.id, url: img.url })),
   };
 }
 
 export async function listProductsAdmin(): Promise<Product[]> {
   const products = await prisma.product.findMany({
-    include: { category: true },
+    include: PRODUCT_INCLUDE,
     orderBy: { createdAt: "desc" },
   });
   return products.map(toProduct);
 }
 
 export async function getProductForAdmin(id: string): Promise<Product | undefined> {
-  const product = await prisma.product.findUnique({ where: { id }, include: { category: true } });
+  const product = await prisma.product.findUnique({ where: { id }, include: PRODUCT_INCLUDE });
   return product ? toProduct(product) : undefined;
 }
 
@@ -155,7 +157,8 @@ export interface ProductInput {
   sizes: SizeOption[];
   isNew: boolean;
   isBestSeller: boolean;
-  imageUrl?: string | null;
+  addImageUrls?: string[];
+  removeImageIds?: string[];
 }
 
 function uniqueSlug(name: string, suffix = 0): string {
@@ -188,7 +191,9 @@ export async function createProduct(input: ProductInput) {
       isNew: input.isNew,
       isBestSeller: input.isBestSeller,
       tone: ((Math.floor(Math.random() * 4) + 1) as 1 | 2 | 3 | 4),
-      imageUrl: input.imageUrl,
+      images: {
+        create: (input.addImageUrls ?? []).map((url, position) => ({ url, position })),
+      },
     },
   });
 }
@@ -196,6 +201,21 @@ export async function createProduct(input: ProductInput) {
 export async function updateProduct(id: string, input: ProductInput) {
   const category = await prisma.category.findUnique({ where: { id: input.categoryId } });
   if (!category) throw new Error("Catégorie introuvable");
+
+  if (input.removeImageIds?.length) {
+    const removed = await prisma.productImage.findMany({
+      where: { id: { in: input.removeImageIds }, productId: id },
+    });
+    await prisma.productImage.deleteMany({ where: { id: { in: input.removeImageIds }, productId: id } });
+    await Promise.all(removed.map((img) => deleteUploadedImage(img.url)));
+  }
+
+  if (input.addImageUrls?.length) {
+    const existingCount = await prisma.productImage.count({ where: { productId: id } });
+    await prisma.productImage.createMany({
+      data: input.addImageUrls.map((url, i) => ({ productId: id, url, position: existingCount + i })),
+    });
+  }
 
   return prisma.product.update({
     where: { id },
@@ -211,13 +231,14 @@ export async function updateProduct(id: string, input: ProductInput) {
       sizes: JSON.parse(JSON.stringify(input.sizes)),
       isNew: input.isNew,
       isBestSeller: input.isBestSeller,
-      ...(input.imageUrl !== undefined ? { imageUrl: input.imageUrl } : {}),
     },
   });
 }
 
 export async function deleteProduct(id: string) {
+  const images = await prisma.productImage.findMany({ where: { productId: id } });
   await prisma.product.delete({ where: { id } });
+  await Promise.all(images.map((img) => deleteUploadedImage(img.url)));
 }
 
 // ---------- Upload de photo ----------
@@ -241,4 +262,13 @@ export async function saveUploadedImage(file: File): Promise<string> {
   await writeFile(path.join(UPLOAD_DIR, filename), buffer);
 
   return `/uploads/${filename}`;
+}
+
+export async function deleteUploadedImage(url: string): Promise<void> {
+  if (!url.startsWith("/uploads/")) return;
+  try {
+    await unlink(path.join(UPLOAD_DIR, path.basename(url)));
+  } catch {
+    // le fichier n'existe déjà plus : rien à faire
+  }
 }

@@ -93,11 +93,11 @@ model Category {
 }
 
 model Product {
-  id            String   @id @default(cuid())
-  slug          String   @unique
+  id            String         @id @default(cuid())
+  slug          String         @unique
   name          String
   section       Section
-  category      Category @relation(fields: [categoryId], references: [id])
+  category      Category       @relation(fields: [categoryId], references: [id])
   categoryId    String
   price         Int
   oldPrice      Int?
@@ -105,13 +105,24 @@ model Product {
   tailles       String
   colors        Json
   sizes         Json
-  isNew         Boolean  @default(false)
-  isBestSeller  Boolean  @default(false)
-  tone          Int      @default(1)
-  imageUrl      String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  isNew         Boolean        @default(false)
+  isBestSeller  Boolean        @default(false)
+  tone          Int            @default(1)
+  images        ProductImage[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@index([section])
   @@index([categoryId])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  url       String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
 }

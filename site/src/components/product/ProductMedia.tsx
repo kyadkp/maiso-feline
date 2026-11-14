@@ -6,16 +6,33 @@ import type { Tone } from "@/lib/types";
 export function CardMedia({
   tone,
   imageUrl,
+  hoverImageUrl,
   alt = "",
 }: {
   tone: Tone;
   imageUrl?: string | null;
+  hoverImageUrl?: string | null;
   alt?: string;
 }) {
   if (imageUrl) {
     return (
       <div className="relative aspect-[3/4] overflow-hidden rounded-xs bg-surface">
-        <Image src={imageUrl} alt={alt} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover" />
+        <Image
+          src={imageUrl}
+          alt={alt}
+          fill
+          sizes="(max-width: 1024px) 50vw, 25vw"
+          className={`object-cover ${hoverImageUrl ? "transition-opacity duration-300 group-hover:opacity-0" : ""}`}
+        />
+        {hoverImageUrl && (
+          <Image
+            src={hoverImageUrl}
+            alt={alt}
+            fill
+            sizes="(max-width: 1024px) 50vw, 25vw"
+            className="object-cover"
+          />
+        )}
       </div>
     );
   }

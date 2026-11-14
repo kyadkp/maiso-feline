@@ -54,7 +54,8 @@ export async function saveProductAction(
   const sizes = parseSizes(String(formData.get("sizes") ?? ""));
   const isNew = formData.get("isNew") === "on";
   const isBestSeller = formData.get("isBestSeller") === "on";
-  const imageFile = formData.get("image");
+  const imageFiles = formData.getAll("images").filter((f): f is File => f instanceof File && f.size > 0);
+  const removeImageIds = formData.getAll("removeImageIds").map(String).filter(Boolean);
 
   if (name.length < 2) return { error: "Le nom du produit est trop court." };
   if (!categoryId) return { error: "Choisissez une catégorie." };
@@ -67,12 +68,12 @@ export async function saveProductAction(
   if (colors.length === 0) return { error: "Ajoutez au moins une couleur." };
   if (sizes.length === 0) return { error: "Ajoutez au moins une taille." };
 
-  let imageUrl: string | undefined;
-  if (imageFile instanceof File && imageFile.size > 0) {
+  const addImageUrls: string[] = [];
+  for (const file of imageFiles) {
     try {
-      imageUrl = await saveUploadedImage(imageFile);
+      addImageUrls.push(await saveUploadedImage(file));
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "Erreur lors de l'envoi de la photo." };
+      return { error: err instanceof Error ? err.message : "Erreur lors de l'envoi d'une photo." };
     }
   }
 
@@ -87,7 +88,8 @@ export async function saveProductAction(
     sizes,
     isNew,
     isBestSeller,
-    imageUrl,
+    addImageUrls,
+    removeImageIds,
   };
 
   try {

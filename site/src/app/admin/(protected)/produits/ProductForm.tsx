@@ -155,18 +155,48 @@ export function ProductForm({
       </div>
 
       <div>
-        <label htmlFor="image" className="mb-2 block text-xs tracking-wider text-foreground-muted uppercase">
-          Photo {product?.imageUrl ? "(remplacer)" : "(optionnel pour l'instant)"}
+        <label className="mb-2 block text-xs tracking-wider text-foreground-muted uppercase">
+          Photos — 5 conseillées pour une belle présentation
         </label>
+
+        {product && product.images.length > 0 && (
+          <div className="mb-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
+            {product.images.map((img, i) => (
+              <label key={img.id} className="group relative block cursor-pointer has-[:checked]:opacity-40">
+                <input
+                  type="checkbox"
+                  name="removeImageIds"
+                  value={img.id}
+                  className="peer absolute right-1.5 top-1.5 z-10 h-4.5 w-4.5"
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img.url} alt="" className="aspect-[3/4] w-full rounded-xs border border-line object-cover" />
+                {i === 0 && (
+                  <span className="absolute bottom-1 left-1 rounded-xs bg-accent px-1.5 py-0.5 text-[10px] text-background uppercase">
+                    Principale
+                  </span>
+                )}
+              </label>
+            ))}
+          </div>
+        )}
+        {product && product.images.length > 0 && (
+          <p className="mb-3 text-xs text-foreground-muted">
+            Cochez une photo pour la supprimer à l&apos;enregistrement.
+          </p>
+        )}
+
         <input
-          id="image"
-          name="image"
+          id="images"
+          name="images"
           type="file"
+          multiple
           accept="image/jpeg,image/png,image/webp"
           className="w-full border border-line bg-transparent px-4 py-3 text-sm file:mr-3 file:border-0 file:bg-accent file:px-3 file:py-1.5 file:text-background"
         />
         <p className="mt-1.5 text-xs text-foreground-muted">
-          jpg, png ou webp, 5 Mo maximum. Sans photo, un visuel de remplacement élégant reste affiché.
+          jpg, png ou webp, 5 Mo par photo. Vous pouvez en sélectionner plusieurs à la fois ;
+          elles s&apos;ajoutent à celles déjà en place. Sans photo, un visuel de remplacement élégant reste affiché.
         </p>
       </div>
 
