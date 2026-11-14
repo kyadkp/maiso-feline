@@ -8,6 +8,8 @@ export interface TrackOrderState {
   order?: {
     orderNumber: string;
     status: string;
+    paymentMethod: string;
+    paymentStatus: string;
     totalAmount: number;
     createdAt: string;
     items: { name: string; color: string; size: string; quantity: number; price: number }[];
@@ -36,6 +38,8 @@ export async function trackOrderAction(
     order: {
       orderNumber: order.orderNumber,
       status: order.status,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: order.paymentStatus,
       totalAmount: order.totalAmount,
       createdAt: order.createdAt.toISOString(),
       items: order.items.map((item) => ({

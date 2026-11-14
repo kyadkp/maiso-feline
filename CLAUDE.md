@@ -100,4 +100,14 @@ Ce fichier est la référence du projet. À relire au début de chaque nouvelle 
   - Gestion des commandes : liste complète, recherche (nom/téléphone/numéro), filtre par statut, changement de statut en un clic.
   - Catalogue (produits + catégories) **déplacé de données statiques vers la base de données** : la gérante peut maintenant ajouter/modifier/supprimer produits et catégories elle-même, avec envoi de photo (jpg/png/webp, 5 Mo max, stockées dans `site/public/uploads`). Une catégorie encore utilisée par des produits ne peut pas être supprimée (message d'erreur clair).
   - Toutes les pages client (accueil, catégories, recherche, fiche produit) lisent désormais la base de données en direct : un produit ajouté par la gérante apparaît immédiatement sur le site.
-- (à compléter : choix final de l'agrégateur, nom de domaine, etc.)
+- Étape 5 (paiements) réalisée côté code, **en attente des clés PayTech de la gérante pour tester en conditions réelles** :
+  - **Agrégateur confirmé : PayTech** (paytech.sn). Comparé à nouveau avec CinetPay avant de construire : PayTech offre un mode test immédiat sans aucun papier d'entreprise, une vérification de signature (HMAC-SHA256) bien documentée, et gère Wave + Orange Money ; CinetPay a un fonctionnement équivalent mais des conditions d'accès au sandbox moins claires. PayTech reste donc le premier choix validé.
+  - Flux : à la commande, si Wave ou Orange Money est choisi, le site appelle l'API PayTech puis redirige la cliente vers une page de paiement hébergée par PayTech (sécurisée, hors de notre site). PayTech nous notifie ensuite automatiquement (webhook/IPN) du résultat.
+  - Sécurité : la commande n'est marquée "payée" (`paymentStatus: PAID`) que si la notification de PayTech est vérifiée par signature HMAC-SHA256 côté serveur (`/api/paytech/ipn`) — jamais depuis le navigateur. Testé avec une fausse notification non signée : rejetée (403), commande inchangée.
+  - Tant que les clés ne sont pas renseignées (`PAYTECH_API_KEY`/`PAYTECH_API_SECRET` dans `.env`), le site refuse poliment Wave/Orange Money à la commande et oriente vers "Paiement à la livraison" — aucun blocage, juste pas encore activé.
+  - **Ce qu'il reste à faire avec la gérante** :
+    1. Créer un compte gratuit sur paytech.sn (aucun document d'entreprise requis pour le mode test).
+    2. Récupérer la Clé API et la Clé Secrète de test dans le tableau de bord PayTech, me les transmettre pour les ajouter à `.env`.
+    3. Comme le site tourne sur cet ordinateur (pas encore en ligne), PayTech ne peut pas encore nous notifier automatiquement : il faudra un tunnel temporaire (ex. ngrok) pour tester le paiement de bout en bout avant la mise en ligne. À mettre en place avec son accord le moment venu.
+  - Activation du mode réel (`env=prod`, vrai argent) : nécessite en plus une validation PayTech avec les documents de l'entreprise (NINEA, registre de commerce...) — à prévoir pour la mise en ligne (étape 7), pas avant.
+- (à compléter : clés PayTech de test, nom de domaine, etc.)

@@ -10,6 +10,12 @@ const PAYMENT_LABELS: Record<string, string> = {
   COD: "À la livraison",
 };
 
+const PAYMENT_STATUS_LABELS: Record<string, string> = {
+  PENDING: "En attente",
+  PAID: "Payé",
+  FAILED: "Échoué",
+};
+
 const STATUS_FILTERS = [
   { value: "ALL", label: "Tous les statuts" },
   { value: "NOUVELLE", label: "Nouvelle" },
@@ -85,7 +91,16 @@ export default async function AdminCommandesPage({
                   {order.address}, {order.city}
                 </td>
                 <td className="py-3 pr-4">{new Date(order.createdAt).toLocaleDateString("fr-FR")}</td>
-                <td className="py-3 pr-4">{PAYMENT_LABELS[order.paymentMethod] ?? order.paymentMethod}</td>
+                <td className="py-3 pr-4">
+                  {PAYMENT_LABELS[order.paymentMethod] ?? order.paymentMethod}
+                  {order.paymentMethod !== "COD" && (
+                    <span
+                      className={`ml-1.5 text-xs ${order.paymentStatus === "PAID" ? "text-accent" : "text-foreground-muted"}`}
+                    >
+                      ({PAYMENT_STATUS_LABELS[order.paymentStatus] ?? order.paymentStatus})
+                    </span>
+                  )}
+                </td>
                 <td className="py-3 pr-4 text-accent">{formatPrice(order.totalAmount)}</td>
                 <td className="py-3 pr-4">
                   <StatusSelect orderId={order.id} status={order.status} />

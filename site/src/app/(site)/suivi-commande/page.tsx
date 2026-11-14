@@ -13,6 +13,18 @@ const STATUS_LABELS: Record<string, string> = {
   ANNULEE: "Annulée",
 };
 
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  WAVE: "Wave",
+  ORANGE_MONEY: "Orange Money",
+  COD: "À la livraison",
+};
+
+const PAYMENT_STATUS_LABELS: Record<string, string> = {
+  PENDING: "En attente",
+  PAID: "Payée",
+  FAILED: "Échouée",
+};
+
 export default function SuiviCommandePage() {
   const [state, formAction, pending] = useActionState(trackOrderAction, initialState);
 
@@ -68,8 +80,14 @@ export default function SuiviCommandePage() {
               {STATUS_LABELS[state.order.status] ?? state.order.status}
             </span>
           </div>
-          <p className="mb-5 text-sm text-foreground-muted">
+          <p className="mb-1 text-sm text-foreground-muted">
             Commande du {new Date(state.order.createdAt).toLocaleDateString("fr-FR")}
+          </p>
+          <p className="mb-5 text-sm text-foreground-muted">
+            Paiement {PAYMENT_METHOD_LABELS[state.order.paymentMethod] ?? state.order.paymentMethod} —{" "}
+            {state.order.paymentMethod === "COD"
+              ? "à régler à la livraison"
+              : (PAYMENT_STATUS_LABELS[state.order.paymentStatus] ?? state.order.paymentStatus)}
           </p>
           <div className="divide-y divide-line">
             {state.order.items.map((item, i) => (

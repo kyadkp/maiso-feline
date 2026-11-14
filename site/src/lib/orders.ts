@@ -64,6 +64,10 @@ export async function createOrder(input: CreateOrderInput) {
   });
 }
 
+export async function setOrderPaytechToken(orderId: string, token: string) {
+  await prisma.order.update({ where: { id: orderId }, data: { paytechToken: token } });
+}
+
 export async function getOrderForTracking(orderNumber: string, phone: string) {
   const order = await prisma.order.findUnique({
     where: { orderNumber },

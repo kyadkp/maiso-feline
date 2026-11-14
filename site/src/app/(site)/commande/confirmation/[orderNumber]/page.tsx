@@ -15,7 +15,9 @@ export default async function ConfirmationPage({
       <p className="mb-8 font-display text-2xl tracking-wider">{orderNumber}</p>
       <p className="mb-10 text-sm text-foreground-muted">
         Conservez ce numéro avec votre numéro de téléphone pour suivre votre commande.
-        Vous serez contactée pour confirmer les détails de livraison et de paiement.
+        Si vous avez payé par Wave ou Orange Money, le paiement est vérifié automatiquement
+        dès sa réception. Pour un paiement à la livraison, vous serez contactée pour
+        confirmer les détails.
       </p>
       <div className="flex flex-wrap justify-center gap-4">
         <Link

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useActionState } from "react";
 import { useCart } from "@/components/cart/CartContext";
 import { formatPrice } from "@/lib/format";
 import { createOrderAction, type CheckoutState } from "./actions";
+import { PaymentCancelledNotice } from "./PaymentCancelledNotice";
 
 const initialState: CheckoutState = {};
 
@@ -22,12 +23,15 @@ export default function CommandePage() {
   const [state, formAction, pending] = useActionState(createOrderAction, initialState);
 
   useEffect(() => {
-    if (state.orderNumber) {
+    if (state.redirectUrl) {
+      clear();
+      window.location.href = state.redirectUrl;
+    } else if (state.orderNumber) {
       clear();
       router.push(`/commande/confirmation/${state.orderNumber}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.orderNumber]);
+  }, [state.orderNumber, state.redirectUrl]);
 
   if (items.length === 0 && !state.orderNumber) {
     return (
@@ -55,6 +59,10 @@ export default function CommandePage() {
   return (
     <div className="mx-auto max-w-[760px] px-5 py-14">
       <h1 className="mb-10 text-[clamp(32px,5vw,48px)]">Valider la commande</h1>
+
+      <Suspense fallback={null}>
+        <PaymentCancelledNotice />
+      </Suspense>
 
       <div className="mb-10 divide-y divide-line border-y border-line">
         {items.map((item) => (
@@ -144,8 +152,8 @@ export default function CommandePage() {
             ))}
           </div>
           <p className="mt-2.5 text-xs text-foreground-muted">
-            Pour Wave et Orange Money, le paiement en ligne sera activé à l&apos;étape 5 : en
-            attendant, vous serez contactée pour confirmer le règlement.
+            Pour Wave et Orange Money, vous serez redirigée vers une page de paiement
+            sécurisée. La commande n&apos;est confirmée qu&apos;une fois le paiement reçu.
           </p>
         </fieldset>
 

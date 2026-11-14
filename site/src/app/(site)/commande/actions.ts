@@ -1,13 +1,23 @@
 "use server";
 
+import { headers } from "next/headers";
 import { auth } from "@/auth";
-import { createOrder, type OrderItemInput } from "@/lib/orders";
+import { createOrder, setOrderPaytechToken, type OrderItemInput } from "@/lib/orders";
 import { getProductBySlug } from "@/lib/products";
+import { isPaytechConfigured, requestPayment } from "@/lib/paytech";
 import { cartItemsSchema, checkoutSchema } from "@/lib/validation";
 
 export interface CheckoutState {
   error?: string;
   orderNumber?: string;
+  redirectUrl?: string;
+}
+
+async function getBaseUrl(): Promise<string> {
+  const h = await headers();
+  const host = h.get("host") ?? "localhost:3100";
+  const protocol = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  return `${protocol}://${host}`;
 }
 
 export async function createOrderAction(
@@ -61,6 +71,13 @@ export async function createOrderAction(
     });
   }
 
+  if (fields.data.paymentMethod !== "COD" && !isPaytechConfigured()) {
+    return {
+      error:
+        "Le paiement en ligne n'est pas encore configuré. Merci de choisir « Paiement à la livraison » pour l'instant.",
+    };
+  }
+
   const session = await auth();
 
   const order = await createOrder({
@@ -69,5 +86,30 @@ export async function createOrderAction(
     userId: session?.user?.id,
   });
 
-  return { orderNumber: order.orderNumber };
+  if (fields.data.paymentMethod === "COD") {
+    return { orderNumber: order.orderNumber };
+  }
+
+  const baseUrl = await getBaseUrl();
+
+  try {
+    const payment = await requestPayment({
+      itemName: `Commande ${order.orderNumber}`,
+      amount: order.totalAmount,
+      refCommand: order.orderNumber,
+      targetPayment: fields.data.paymentMethod === "WAVE" ? "Wave" : "Orange Money",
+      ipnUrl: `${baseUrl}/api/paytech/ipn`,
+      successUrl: `${baseUrl}/commande/confirmation/${order.orderNumber}`,
+      cancelUrl: `${baseUrl}/commande?paiement=annule`,
+    });
+    await setOrderPaytechToken(order.id, payment.token);
+    return { redirectUrl: payment.redirectUrl };
+  } catch (err) {
+    return {
+      error:
+        err instanceof Error
+          ? `Commande enregistrée (${order.orderNumber}), mais le paiement n'a pas pu démarrer : ${err.message}`
+          : "Commande enregistrée, mais le paiement n'a pas pu démarrer.",
+    };
+  }
 }
