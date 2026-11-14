@@ -22,6 +22,11 @@ export default function AdminConnexionPage() {
             id="phone"
             name="phone"
             type="tel"
+            inputMode="numeric"
+            maxLength={13}
+            onChange={(e) => {
+              e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
+            }}
             required
             className="w-full border border-line bg-transparent px-4 py-3 text-sm outline-none focus:border-accent"
           />
