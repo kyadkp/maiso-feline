@@ -1,0 +1,3 @@
+{
+  "buildCommand": "prisma migrate deploy && npx tsx prisma/seed-admin.ts && next build"
+}

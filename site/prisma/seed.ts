@@ -1,10 +1,10 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { SEED_CATEGORY_TREE, SEED_PRODUCTS, type SeedSection } from "./seed-data";
 
-const adapter = new PrismaLibSql({ url: process.env.DATABASE_URL ?? "file:./dev.db" });
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL_POOLED ?? process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 const SECTION_MAP: Record<SeedSection, "FEMME" | "HOMME" | "CHAUSSURES"> = {
