@@ -45,6 +45,22 @@ export default function AdminConnexionPage() {
           />
         </div>
 
+        <div>
+          <label htmlFor="totpCode" className="mb-2 block text-xs tracking-wider text-foreground-muted uppercase">
+            Code 2FA (si activée)
+          </label>
+          <input
+            id="totpCode"
+            name="totpCode"
+            inputMode="numeric"
+            maxLength={6}
+            onChange={(e) => {
+              e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "");
+            }}
+            className="w-full border border-line bg-transparent px-4 py-3 text-sm outline-none focus:border-accent"
+          />
+        </div>
+
         {state.error && <p className="text-sm text-accent">{state.error}</p>}
 
         <button

@@ -25,12 +25,16 @@ export async function adminLoginAction(
     await signIn("credentials", {
       phone: parsed.data.phone,
       password: parsed.data.password,
+      totpCode: String(formData.get("totpCode") ?? ""),
       redirectTo: "/admin",
     });
     return {};
   } catch (err) {
     if (err instanceof AuthError) {
-      return { error: "Identifiants incorrects, ou compte temporairement bloqué après plusieurs essais." };
+      return {
+        error:
+          "Identifiants ou code 2FA incorrects, ou compte temporairement bloqué après plusieurs essais.",
+      };
     }
     throw err;
   }

@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { verifyTotpCode } from "@/lib/totp";
 import { phoneSchema } from "@/lib/validation";
 
 const MAX_FAILED_ATTEMPTS = 5;
@@ -15,10 +16,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         phone: { label: "Téléphone", type: "text" },
         password: { label: "Mot de passe", type: "password" },
+        totpCode: { label: "Code 2FA", type: "text" },
       },
       async authorize(credentials) {
         const phoneResult = phoneSchema.safeParse(credentials?.phone);
         const password = typeof credentials?.password === "string" ? credentials.password : "";
+        const totpCode = typeof credentials?.totpCode === "string" ? credentials.totpCode.trim() : "";
         if (!phoneResult.success || password.length === 0) return null;
 
         const user = await prisma.user.findUnique({ where: { phone: phoneResult.data } });
@@ -28,9 +31,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // on refuse sans préciser la raison, pour ne pas confirmer qu'il existe.
         if (user.lockedUntil && user.lockedUntil > new Date()) return null;
 
-        const valid = await bcrypt.compare(password, user.passwordHash);
+        const validPassword = await bcrypt.compare(password, user.passwordHash);
+        // Si la 2FA est activée, un code manquant ou incorrect compte aussi
+        // comme une tentative échouée (même limitation que le mot de passe),
+        // pour empêcher de deviner le code à 6 chiffres par essais répétés.
+        const validTotp = !user.twoFactorEnabled || verifyTotpCode(user.twoFactorSecret ?? "", totpCode);
 
-        if (!valid) {
+        if (!validPassword || !validTotp) {
           const attempts = user.failedAttempts + 1;
           const lock = attempts >= MAX_FAILED_ATTEMPTS;
           await prisma.user.update({

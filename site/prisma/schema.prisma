@@ -20,6 +20,8 @@ model User {
   role               Role      @default(CLIENT)
   failedAttempts     Int       @default(0)
   lockedUntil        DateTime?
+  twoFactorSecret    String?
+  twoFactorEnabled   Boolean   @default(false)
   createdAt          DateTime  @default(now())
   orders             Order[]
 }

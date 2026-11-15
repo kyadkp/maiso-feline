@@ -36,6 +36,12 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
             >
               Mot de passe
             </Link>
+            <Link
+              href="/admin/2fa"
+              className="rounded-xs border border-line px-4 py-2 text-xs tracking-wider uppercase hover:border-accent hover:text-accent"
+            >
+              2FA
+            </Link>
             <SignOutForm />
           </div>
         </div>
