@@ -29,19 +29,33 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
               </Link>
             ))}
           </nav>
-          <form
-            action={async () => {
-              "use server";
-              await signOut({ redirectTo: "/admin/connexion" });
-            }}
-          >
-            <button className="rounded-xs border border-line px-4 py-2 text-xs tracking-wider uppercase hover:border-accent hover:text-accent">
-              Déconnexion
-            </button>
-          </form>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/mot-de-passe"
+              className="rounded-xs border border-line px-4 py-2 text-xs tracking-wider uppercase hover:border-accent hover:text-accent"
+            >
+              Mot de passe
+            </Link>
+            <SignOutForm />
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-[1240px] px-5 py-10">{children}</main>
     </div>
+  );
+}
+
+function SignOutForm() {
+  return (
+    <form
+      action={async () => {
+        "use server";
+        await signOut({ redirectTo: "/admin/connexion" });
+      }}
+    >
+      <button className="rounded-xs border border-line px-4 py-2 text-xs tracking-wider uppercase hover:border-accent hover:text-accent">
+        Déconnexion
+      </button>
+    </form>
   );
 }

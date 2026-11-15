@@ -48,3 +48,14 @@ export const trackOrderSchema = z.object({
   orderNumber: z.string().trim().min(3).max(40),
   phone: phoneSchema,
 });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Mot de passe actuel requis"),
+    newPassword: passwordSchema,
+    confirmPassword: z.string().min(1),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Les deux mots de passe ne correspondent pas",
+    path: ["confirmPassword"],
+  });
