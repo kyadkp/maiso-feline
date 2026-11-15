@@ -71,3 +71,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
 });
+
+// Une Server Action reste un point d'entrée accessible indépendamment de la
+// page qui l'affiche : chaque action réservée à l'admin doit donc revérifier
+// elle-même la session, sans se fier uniquement au layout qui l'entoure.
+export async function requireAdmin() {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Accès refusé");
+  }
+  return session;
+}

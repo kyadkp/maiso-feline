@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdmin } from "@/auth";
 import {
   createProduct,
   deleteProduct,
@@ -42,6 +43,8 @@ export async function saveProductAction(
   _prevState: ProductFormState,
   formData: FormData
 ): Promise<ProductFormState> {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const name = String(formData.get("name") ?? "").trim();
   const categoryId = String(formData.get("categoryId") ?? "");
@@ -107,6 +110,8 @@ export async function saveProductAction(
 }
 
 export async function deleteProductAction(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   await deleteProduct(id);

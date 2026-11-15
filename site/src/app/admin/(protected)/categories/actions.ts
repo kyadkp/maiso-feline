@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/auth";
 import { createCategory, deleteCategory } from "@/lib/admin";
 import type { Section } from "@/lib/types";
 
@@ -14,6 +15,8 @@ export async function createCategoryAction(
   _prevState: CategoryActionState,
   formData: FormData
 ): Promise<CategoryActionState> {
+  await requireAdmin();
+
   const section = String(formData.get("section") ?? "") as Section;
   const label = String(formData.get("label") ?? "").trim();
 
@@ -35,6 +38,8 @@ export async function deleteCategoryAction(
   _prevState: CategoryActionState,
   formData: FormData
 ): Promise<CategoryActionState> {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   if (!id) return { error: "Catégorie invalide." };
 
