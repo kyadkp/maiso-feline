@@ -1,6 +1,4 @@
-import { randomUUID } from "node:crypto";
-import { mkdir, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { del, put } from "@vercel/blob";
 import { prisma } from "./db";
 import { SECTION_FROM_DB, SECTION_TO_DB } from "./sections";
 import type { Category, ColorOption, Product, Section, SizeOption } from "./types";
@@ -242,8 +240,9 @@ export async function deleteProduct(id: string) {
 }
 
 // ---------- Upload de photo ----------
+// Stockées sur Vercel Blob (nécessaire car le serveur n'a pas de disque
+// permanent une fois en ligne) plutôt que sur le système de fichiers local.
 
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5 Mo
 
@@ -255,19 +254,18 @@ export async function saveUploadedImage(file: File): Promise<string> {
     throw new Error("Image trop lourde (5 Mo maximum)");
   }
 
-  await mkdir(UPLOAD_DIR, { recursive: true });
   const extension = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
-  const filename = `${randomUUID()}.${extension}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(UPLOAD_DIR, filename), buffer);
+  const blob = await put(`uploads/${Date.now()}.${extension}`, file, {
+    access: "public",
+    addRandomSuffix: true,
+  });
 
-  return `/uploads/${filename}`;
+  return blob.url;
 }
 
 export async function deleteUploadedImage(url: string): Promise<void> {
-  if (!url.startsWith("/uploads/")) return;
   try {
-    await unlink(path.join(UPLOAD_DIR, path.basename(url)));
+    await del(url);
   } catch {
     // le fichier n'existe déjà plus : rien à faire
   }
