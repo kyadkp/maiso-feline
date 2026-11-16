@@ -105,8 +105,8 @@ export async function saveProductAction(
     return { error: err instanceof Error ? err.message : "Erreur lors de l'enregistrement." };
   }
 
-  revalidatePath("/admin/produits");
-  redirect("/admin/produits");
+  revalidatePath("/admin/securite/produits");
+  redirect("/admin/securite/produits");
 }
 
 export async function deleteProductAction(formData: FormData) {
@@ -115,5 +115,5 @@ export async function deleteProductAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   await deleteProduct(id);
-  revalidatePath("/admin/produits");
+  revalidatePath("/admin/securite/produits");
 }

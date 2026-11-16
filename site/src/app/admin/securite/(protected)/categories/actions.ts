@@ -30,7 +30,7 @@ export async function createCategoryAction(
     return { error: err instanceof Error ? err.message : "Erreur lors de la création." };
   }
 
-  revalidatePath("/admin/categories");
+  revalidatePath("/admin/securite/categories");
   return {};
 }
 
@@ -49,6 +49,6 @@ export async function deleteCategoryAction(
     return { error: err instanceof Error ? err.message : "Erreur lors de la suppression." };
   }
 
-  revalidatePath("/admin/categories");
+  revalidatePath("/admin/securite/categories");
   return {};
 }

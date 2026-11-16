@@ -26,7 +26,7 @@ export async function adminLoginAction(
       phone: parsed.data.phone,
       password: parsed.data.password,
       totpCode: String(formData.get("totpCode") ?? ""),
-      redirectTo: "/admin",
+      redirectTo: "/admin/securite",
     });
     return {};
   } catch (err) {

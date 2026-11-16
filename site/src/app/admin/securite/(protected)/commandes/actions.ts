@@ -17,5 +17,5 @@ export async function updateOrderStatusAction(formData: FormData) {
   }
 
   await updateOrderStatus(orderId, status as (typeof VALID_STATUSES)[number]);
-  revalidatePath("/admin/commandes");
+  revalidatePath("/admin/securite/commandes");
 }

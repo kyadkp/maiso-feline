@@ -28,13 +28,13 @@ export default async function AdminDashboardPage() {
 
       <div className="flex flex-wrap gap-4">
         <Link
-          href="/admin/commandes"
+          href="/admin/securite/commandes"
           className="rounded-xs border border-accent bg-accent px-6 py-3 text-[13px] tracking-[0.14em] text-background uppercase"
         >
           Voir les commandes
         </Link>
         <Link
-          href="/admin/produits/nouveau"
+          href="/admin/securite/produits/nouveau"
           className="rounded-xs border border-foreground px-6 py-3 text-[13px] tracking-[0.14em] uppercase"
         >
           Ajouter un produit

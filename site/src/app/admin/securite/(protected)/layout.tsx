@@ -4,22 +4,22 @@ import type { ReactNode } from "react";
 import { auth, signOut } from "@/auth";
 
 const ADMIN_LINKS = [
-  { href: "/admin", label: "Tableau de bord" },
-  { href: "/admin/commandes", label: "Commandes" },
-  { href: "/admin/produits", label: "Produits" },
-  { href: "/admin/categories", label: "Catégories" },
+  { href: "/admin/securite", label: "Tableau de bord" },
+  { href: "/admin/securite/commandes", label: "Commandes" },
+  { href: "/admin/securite/produits", label: "Produits" },
+  { href: "/admin/securite/categories", label: "Catégories" },
 ];
 
 export default async function AdminProtectedLayout({ children }: { children: ReactNode }) {
   const session = await auth();
-  if (!session?.user) redirect("/admin/connexion");
+  if (!session?.user) redirect("/admin/securite/connexion");
   if (session.user.role !== "ADMIN") redirect("/");
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-line">
         <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-4 px-5 py-4">
-          <Link href="/admin" className="font-display text-lg tracking-wider uppercase">
+          <Link href="/admin/securite" className="font-display text-lg tracking-wider uppercase">
             Maison Féline — Admin
           </Link>
           <nav className="flex flex-wrap gap-5 text-[13px] tracking-wider uppercase">
@@ -31,13 +31,13 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
           </nav>
           <div className="flex items-center gap-3">
             <Link
-              href="/admin/mot-de-passe"
+              href="/admin/securite/mot-de-passe"
               className="rounded-xs border border-line px-4 py-2 text-xs tracking-wider uppercase hover:border-accent hover:text-accent"
             >
               Mot de passe
             </Link>
             <Link
-              href="/admin/2fa"
+              href="/admin/securite/2fa"
               className="rounded-xs border border-line px-4 py-2 text-xs tracking-wider uppercase hover:border-accent hover:text-accent"
             >
               2FA
@@ -56,7 +56,7 @@ function SignOutForm() {
     <form
       action={async () => {
         "use server";
-        await signOut({ redirectTo: "/admin/connexion" });
+        await signOut({ redirectTo: "/admin/securite/connexion" });
       }}
     >
       <button className="rounded-xs border border-line px-4 py-2 text-xs tracking-wider uppercase hover:border-accent hover:text-accent">

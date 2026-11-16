@@ -15,7 +15,7 @@ export default async function AdminProduitsPage() {
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-[clamp(28px,5vw,40px)]">Produits</h1>
         <Link
-          href="/admin/produits/nouveau"
+          href="/admin/securite/produits/nouveau"
           className="rounded-xs border border-accent bg-accent px-6 py-3 text-[13px] tracking-[0.14em] text-background uppercase"
         >
           Ajouter un produit
@@ -40,7 +40,7 @@ export default async function AdminProduitsPage() {
             <p className="w-28 text-right text-sm">{formatPrice(product.price)}</p>
             <div className="flex w-32 flex-col items-end gap-1.5">
               <Link
-                href={`/admin/produits/${product.id}`}
+                href={`/admin/securite/produits/${product.id}`}
                 className="text-xs text-accent underline underline-offset-4"
               >
                 Modifier
